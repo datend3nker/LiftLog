@@ -1,0 +1,3 @@
+[submodule "app/modules/openlink/openlink"]
+	path = app/modules/openlink/openlink
+	url = https://github.com/Hale-MTU/OpenLink.git

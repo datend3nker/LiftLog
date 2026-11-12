@@ -25,6 +25,13 @@ import { DatabaseMigrationService } from './database-migration-service';
 import { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 import { SQLiteDatabase } from 'expo-sqlite';
 import { DatabaseImportService } from '@/services/database-import-service';
+import { OpenLinkService } from '@/services/open-link-service';
+import {
+  heartRateReceived,
+  openLinkDevicesChanged,
+  openLinkStatusChanged,
+  watchRecordingStateChanged,
+} from '@/store/open-link';
 
 export type Services = ReturnType<typeof createServices>;
 
@@ -53,6 +60,18 @@ export function createServices(store: Store<RootState>, db: ExpoSQLiteDatabase, 
   const tolgee = getTolgee(preferenceService);
   const workoutWorkerService = new WorkoutWorker(store.dispatch, store.getState, tolgee);
   const healthExportService: HES = new HealthExportService();
+  const openLinkService = new OpenLinkService();
+  openLinkService.setListener({
+    status: (status) => store.dispatch(openLinkStatusChanged(status)),
+    devices: (devices) => store.dispatch(openLinkDevicesChanged(devices)),
+    recordingState: (state) => store.dispatch(watchRecordingStateChanged(state)),
+    liveSamples: (batch) => {
+      const latest = batch.samples.findLast((sample) => sample.type === 'HEART_RATE');
+      if (latest) {
+        store.dispatch(heartRateReceived({ sessionId: batch.sessionId, bpm: latest.value, atMillis: latest.atMillis }));
+      }
+    },
+  });
   const databaseMigrationService = new DatabaseMigrationService(
     db,
     logger,
@@ -71,6 +90,7 @@ export function createServices(store: Store<RootState>, db: ExpoSQLiteDatabase, 
     feedHubService,
     feedIdentityService,
     healthExportService,
+    openLinkService,
     stringSharer,
     fileExportService,
     filePickerService,

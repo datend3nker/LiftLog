@@ -16,6 +16,7 @@ import { useDispatch } from 'react-redux';
 import { SettingsPage } from '@/components/layout/settings-page';
 import { SegmentedGroup } from '@/components/presentation/foundation/segmented-list';
 import { SegmentedListSwitch } from '@/components/presentation/foundation/segmented-list-switch';
+import { WatchRecordingSettings } from '@/components/smart/watch-recording-settings';
 
 export default function WorkoutConfigurationPage() {
   const { t } = useTranslate();
@@ -74,6 +75,8 @@ export default function WorkoutConfigurationPage() {
           onValueChange={(value) => dispatch(setShowPostWorkoutSummary(value))}
         />
       </SegmentedGroup>
+
+      <WatchRecordingSettings />
     </SettingsPage>
   );
 }

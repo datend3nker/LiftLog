@@ -282,6 +282,7 @@ describe('stored-sessions effects', () => {
         initialState: {
           settings: { isHydrated: true, exportToHealthAggregator: true },
           storedSessions: { openSessions: { [session.id]: session }, activeSessionId: session.id },
+          openLink: { recordings: {} },
         },
         services: {
           db,
@@ -298,6 +299,30 @@ describe('stored-sessions effects', () => {
 
       await testBed.dispatchHandled(sessionFinished(session.id));
       expect(exportWorkout).toHaveBeenCalledTimes(1);
+      expect(exportWorkout).toHaveBeenCalledWith(expect.anything(), { withExerciseSession: true });
+    });
+
+    it('leaves the exercise session to the watch that recorded the workout', async () => {
+      const session = Session.freeformSession(LocalDate.of(2026, 4, 10), undefined);
+      const exportWorkout = vi.fn();
+      const testBed = createAddEffectTestBed({
+        initialState: {
+          settings: { isHydrated: true, exportToHealthAggregator: true },
+          storedSessions: { openSessions: { [session.id]: session }, activeSessionId: session.id },
+          openLink: { recordings: { [session.id]: { deviceId: 'w1', state: undefined, ran: true } } },
+        },
+        services: {
+          db,
+          logger,
+          keyValueStore: makeKvStore(),
+          healthExportService: { canExport: () => true, exportWorkout },
+        },
+      });
+      applyStoredSessionsEffects(testBed.addEffect);
+
+      await testBed.dispatchHandled(sessionFinished(session.id));
+
+      expect(exportWorkout).toHaveBeenCalledWith(expect.anything(), { withExerciseSession: false });
     });
   });
 

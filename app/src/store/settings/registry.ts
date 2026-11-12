@@ -71,6 +71,7 @@ export const preferenceRegistry = {
   keepScreenAwakeDuringWorkout: pref({ default: true, codec: boolCodec }),
   showPostWorkoutSummary: pref({ default: true, codec: boolCodec }),
   trueBlackDarkTheme: pref({ default: false, codec: boolCodec }),
+  recordWorkoutsOnWatch: pref({ default: false, codec: boolCodec }),
   tipToShow: pref({ default: 1, codec: intCodec }),
   lastSeenWhatsNewId: pref({ default: 0, codec: intCodec }),
   colorSchemeSeed: pref<ColorSchemeSeed>({ default: 'default', codec: colorSchemeSeedCodec }),

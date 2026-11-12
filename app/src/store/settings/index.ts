@@ -107,6 +107,7 @@ export const {
   setShowAccomplishments,
   setTrueBlackDarkTheme,
   setThemeMode,
+  setRecordWorkoutsOnWatch,
 } = preferenceSetters;
 
 export const { selectPreferredWeightUnit } = settingsSlice.selectors;

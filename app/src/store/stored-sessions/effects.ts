@@ -32,6 +32,7 @@ import { fromExerciseDescriptorJSON, toExerciseDescriptorJSON } from '@/models/e
 import { loadBuiltInExercises } from '@/services/exercise-catalog';
 import { OffsetDateTime } from '@js-joda/core';
 import { migrateLegacyCurrentSession } from '@/store/stored-sessions/legacy-current-session';
+import { selectWatchRecorded } from '@/store/open-link';
 
 // Built-ins the user deleted, so they stay hidden across restarts and locale switches.
 const hiddenBuiltInExerciseIdsStorageKey = 'HiddenBuiltInExerciseIdList';
@@ -114,7 +115,9 @@ export function applyStoredSessionsEffects(addEffect: AddEffectFn) {
       return;
     }
     try {
-      await healthExportService.exportWorkout(workout);
+      await healthExportService.exportWorkout(workout, {
+        withExerciseSession: !selectWatchRecorded(state, workout.id),
+      });
     } catch (e) {
       logger.error('Failed to sync to health aggregator', e);
     }

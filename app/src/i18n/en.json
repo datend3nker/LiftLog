@@ -795,5 +795,14 @@
   "exercise.remaining_sets.label": "Remaining",
   "exercise.set_of_exercise.label": "{exercise} · Set {number}",
   "generic.decrease.button": "Decrease",
-  "generic.increase.button": "Increase"
+  "generic.increase.button": "Increase",
+  "watch_recording.enabled.label": "Record workouts on your watch",
+  "watch_recording.enabled.subtitle": "OpenWatch records each workout on your watch, with your heart rate, and saves it to Health Connect",
+  "watch_recording.trust_host.label": "Trust OpenWatch",
+  "watch_recording.trust_host.subtitle": "LiftLog does not know this copy of OpenWatch yet",
+  "watch_recording.trust_host.confirm.title": "Trust OpenWatch?",
+  "watch_recording.trust_host.confirm.body": "LiftLog will share your workouts and body weight with the OpenWatch app signed with this key:\n\n{key}",
+  "watch_recording.trust_host.confirm.ok": "Trust",
+  "watch_recording.allow_in_openwatch.label": "Allow LiftLog in OpenWatch",
+  "watch_recording.allow_in_openwatch.subtitle": "OpenWatch asks once before LiftLog may use your watch"
 }

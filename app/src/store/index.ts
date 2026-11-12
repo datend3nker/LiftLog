@@ -14,6 +14,7 @@ import { applyFeedEffects } from '@/store/feed/effects';
 import { applyStatsEffects } from '@/store/stats/effects';
 import { applyAiPlannerEffects } from '@/store/ai-planner/effects';
 import { applyBackendsEffects } from '@/store/backends/effects';
+import { applyOpenLinkEffects } from '@/store/open-link/effects';
 import { clearAllListeners, Store } from '@reduxjs/toolkit';
 import { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 import { useIsFocused } from 'expo-router';
@@ -34,6 +35,7 @@ export function resolveStore(db: ExpoSQLiteDatabase, expoDb: SQLiteDatabase) {
   applyStatsEffects(addEffect);
   applyAiPlannerEffects(addEffect);
   applyBackendsEffects(addEffect);
+  applyOpenLinkEffects(addEffect);
 
   store.dispatch(initializeAppStateSlice());
   return { store, services };

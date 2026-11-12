@@ -34,7 +34,7 @@ export class HealthExportService implements HES {
     }
   }
 
-  async exportWorkout(workout: Session): Promise<void> {
+  async exportWorkout(workout: Session, { withExerciseSession }: { withExerciseSession: boolean }): Promise<void> {
     if (!this.canExport()) {
       return;
     }
@@ -56,7 +56,7 @@ export class HealthExportService implements HES {
       endTime: workout.lastExercise.latestTime!.toString(),
       title: workout.blueprint.name,
     };
-    if (grantedPermissions.some((x) => x.recordType === 'ExerciseSession')) {
+    if (withExerciseSession && grantedPermissions.some((x) => x.recordType === 'ExerciseSession')) {
       await insertRecords([exerciseSessionRecord]);
     }
     if (
