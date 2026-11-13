@@ -19,7 +19,7 @@ const connected: OpenLinkStatus = {
   kind: 'connected',
   protocolVersion: 2,
   trust: 'TRUSTED',
-  grantedCapabilities: ['recording', 'live', 'devices', 'profile'],
+  grantedCapabilities: ['recording', 'devices', 'profile'],
   canOpenConsent: false,
 };
 
@@ -32,7 +32,6 @@ const watch: OpenLinkDevice = {
   supportsRecording: true,
   recordingFeatures: ['HEART_RATE', 'PAUSE'],
   exerciseTypes: [81],
-  liveSampleTypes: ['HEART_RATE'],
 };
 
 function session(): Session {
@@ -52,8 +51,6 @@ function testBed(options: {
     stop: vi.fn(),
     startRecording: vi.fn(),
     stopRecording: vi.fn(),
-    subscribeLive: vi.fn(),
-    unsubscribeLive: vi.fn(),
     setBodyWeight: vi.fn(),
   };
   const bed = createAddEffectTestBed({
@@ -99,7 +96,6 @@ describe('open-link effects', () => {
     await bed.dispatchHandled(activeSessionUpdated({ before: undefined, after: active }));
 
     expect(openLinkService.startRecording).toHaveBeenCalledWith(active.id, 'w1', 81, expect.any(Number));
-    expect(openLinkService.subscribeLive).toHaveBeenCalledWith(active.id, 'w1');
     expect(bed.dispatchedActions).toContainEqual(watchRecordingRequested({ sessionId: active.id, deviceId: 'w1' }));
   });
 
@@ -146,7 +142,6 @@ describe('open-link effects', () => {
     await bed.dispatchHandled(activeSessionUpdated({ before, after: undefined }));
 
     expect(openLinkService.stopRecording).toHaveBeenCalledWith(before.id);
-    expect(openLinkService.unsubscribeLive).toHaveBeenCalledWith(before.id);
   });
 });
 

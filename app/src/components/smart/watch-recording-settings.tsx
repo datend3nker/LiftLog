@@ -17,9 +17,24 @@ export function useCanRecordOnWatch() {
   return openLinkService.isAvailable() && openLinkService.isHostInstalled();
 }
 
-export function WatchRecordingSettings() {
+export function WatchRecordingSwitch() {
   const { t } = useTranslate();
   const dispatch = useDispatch();
+  const enabled = useAppSelector((state) => state.settings.recordWorkoutsOnWatch);
+  return (
+    <SegmentedListSwitch
+      label={t('watch_recording.enabled.label')}
+      supportingText={t('watch_recording.enabled.subtitle')}
+      icon={WatchIcon}
+      systemImage="applewatch"
+      value={enabled}
+      onValueChange={(value) => dispatch(setRecordWorkoutsOnWatch(value))}
+    />
+  );
+}
+
+export function WatchRecordingSettings() {
+  const { t } = useTranslate();
   const confirm = useConfirm();
   const { openLinkService } = useServices();
   const canRecordOnWatch = useCanRecordOnWatch();
@@ -58,14 +73,7 @@ export function WatchRecordingSettings() {
 
   return (
     <SegmentedGroup>
-      <SegmentedListSwitch
-        label={t('watch_recording.enabled.label')}
-        supportingText={t('watch_recording.enabled.subtitle')}
-        icon={WatchIcon}
-        systemImage="applewatch"
-        value={enabled}
-        onValueChange={(value) => dispatch(setRecordWorkoutsOnWatch(value))}
-      />
+      <WatchRecordingSwitch />
       {action ? (
         <SegmentedListLink
           label={action.label}

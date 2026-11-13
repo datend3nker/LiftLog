@@ -20,7 +20,6 @@ export interface OpenLinkDevice {
   supportsRecording: boolean;
   recordingFeatures: ('GPS' | 'HEART_RATE' | 'PAUSE' | 'AUTO_PAUSE')[];
   exerciseTypes: number[];
-  liveSampleTypes: ('HEART_RATE' | 'STEPS' | 'CADENCE' | 'POWER')[];
 }
 
 export interface OpenLinkWorkoutSummary {
@@ -40,17 +39,10 @@ export interface OpenLinkRecordingState {
   summary: OpenLinkWorkoutSummary | null;
 }
 
-export interface OpenLinkLiveBatch {
-  sessionId: string;
-  deviceId: string;
-  samples: { type: string; atMillis: number; value: number }[];
-}
-
 type OpenLinkEvents = {
   onStatus(status: OpenLinkStatus): void;
   onDevices(event: { devices: OpenLinkDevice[] }): void;
   onRecordingState(state: OpenLinkRecordingState): void;
-  onLiveSamples(batch: OpenLinkLiveBatch): void;
 };
 
 declare class OpenLinkNativeModule extends NativeModule<OpenLinkEvents> {
@@ -67,8 +59,6 @@ declare class OpenLinkNativeModule extends NativeModule<OpenLinkEvents> {
   pauseRecording(sessionId: string): void;
   resumeRecording(sessionId: string): void;
   stopRecording(sessionId: string): void;
-  subscribeLive(sessionId: string, deviceId: string): void;
-  unsubscribeLive(sessionId: string): void;
   setBodyWeight(weightKg: number, atMillis: number): void;
 }
 

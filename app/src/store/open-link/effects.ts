@@ -38,7 +38,6 @@ export function applyOpenLinkEffects(addEffect: AddEffectFn) {
     if (!before || before.id === after?.id || !getState().openLink.recordings[before.id]) {
       return;
     }
-    openLinkService.unsubscribeLive(before.id);
     openLinkService.stopRecording(before.id);
   });
 
@@ -70,11 +69,4 @@ function startWatchRecording(state: RootState, dispatch: AppDispatch, openLinkSe
   }
   dispatch(watchRecordingRequested({ sessionId: session.id, deviceId: device.id }));
   openLinkService.startRecording(session.id, device.id, strengthExerciseTypeFor(device), Date.now());
-  if (
-    status.kind === 'connected' &&
-    status.grantedCapabilities.includes('live') &&
-    device.liveSampleTypes.includes('HEART_RATE')
-  ) {
-    openLinkService.subscribeLive(session.id, device.id);
-  }
 }

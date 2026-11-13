@@ -11,18 +11,19 @@ export interface WatchRecording {
 }
 
 export interface OpenLinkState {
+  /** OpenWatch is installed; read once at startup, so state-only readers like What's New can tell. */
+  hostInstalled: boolean;
   status: OpenLinkStatus;
   devices: OpenLinkDevice[];
   /** By LiftLog session id, which is also the OpenLink session id. */
   recordings: Record<string, WatchRecording>;
-  heartRate: { sessionId: string; bpm: number; atMillis: number } | undefined;
 }
 
 const initialState: OpenLinkState = {
+  hostInstalled: false,
   status: { kind: 'stopped' },
   devices: [],
   recordings: {},
-  heartRate: undefined,
 };
 
 /** Health Connect's exercise types for a gym workout, the one LiftLog writes itself first. */
@@ -32,6 +33,9 @@ const openLinkSlice = createSlice({
   name: 'openLink',
   initialState,
   reducers: {
+    openLinkHostInstalled(state, action: PayloadAction<boolean>) {
+      state.hostInstalled = action.payload;
+    },
     openLinkStatusChanged(state, action: PayloadAction<OpenLinkStatus>) {
       state.status = action.payload;
     },
@@ -54,31 +58,25 @@ const openLinkSlice = createSlice({
       recording.state = reported;
       recording.ran ||= reported.phase === 'RECORDING' || reported.phase === 'PAUSED';
     },
-    heartRateReceived(state, action: PayloadAction<{ sessionId: string; bpm: number; atMillis: number }>) {
-      state.heartRate = action.payload;
-    },
   },
   selectors: {
     selectOpenLinkStatus: (state) => state.status,
     selectWatchRecording: (state, sessionId: string): WatchRecording | undefined => state.recordings[sessionId],
     selectWatchRecorded: (state, sessionId: string) => state.recordings[sessionId]?.ran ?? false,
-    selectHeartRate: (state, sessionId: string) =>
-      state.heartRate?.sessionId === sessionId ? state.heartRate : undefined,
   },
 });
 
 export const openLinkReducer = openLinkSlice.reducer;
 
 export const {
+  openLinkHostInstalled,
   openLinkStatusChanged,
   openLinkDevicesChanged,
   watchRecordingRequested,
   watchRecordingStateChanged,
-  heartRateReceived,
 } = openLinkSlice.actions;
 
-export const { selectOpenLinkStatus, selectWatchRecording, selectWatchRecorded, selectHeartRate } =
-  openLinkSlice.selectors;
+export const { selectOpenLinkStatus, selectWatchRecording, selectWatchRecorded } = openLinkSlice.selectors;
 
 /** Connected, trusted with recording, and speaking the version that lets a watch record. */
 export function canRecordOnWatch(status: OpenLinkStatus): boolean {

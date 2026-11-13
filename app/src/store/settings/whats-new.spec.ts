@@ -7,6 +7,7 @@ import {
 } from '@/store/settings';
 import programReducer from '@/store/program';
 import { backendsReducer } from '@/store/backends';
+import { openLinkReducer } from '@/store/open-link';
 import feedReducer from '@/store/feed';
 import { FeedIdentity } from '@/models/feed-models';
 import { RemoteData } from '@/models/remote';
@@ -24,6 +25,7 @@ const stateWith = (
     settings: { ...settingsReducer(undefined, { type: '@@INIT' }), ...settings },
     program: programReducer(undefined, { type: '@@INIT' }),
     backends: backendsReducer(undefined, { type: '@@INIT' }),
+    openLink: { ...openLinkReducer(undefined, { type: '@@INIT' }), hostInstalled: true },
     feed: {
       ...feedReducer(undefined, { type: '@@INIT' }),
       identity: identity ? RemoteData.success(identity) : RemoteData.notAsked(),

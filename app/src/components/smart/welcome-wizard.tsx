@@ -41,6 +41,7 @@ import { useFormatDate } from '@/hooks/useFormatDate';
 import { requestPermissionsAsync } from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import { HealthExportSwitch, useCanExportHealth } from './health-export-switch';
+import { useCanRecordOnWatch, WatchRecordingSwitch } from './watch-recording-settings';
 
 export function WelcomeWizard() {
   const notificationsEnabled = useAppSelector((x) => x.settings.restNotifications);
@@ -83,6 +84,7 @@ export function WelcomeWizard() {
   const { colors } = useAppTheme();
   const [currentPage, setCurrentPage] = useState(0);
   const canExportHealth = useCanExportHealth();
+  const canRecordOnWatch = useCanRecordOnWatch();
 
   const totalPages = 3;
 
@@ -222,6 +224,7 @@ export function WelcomeWizard() {
             onValueChange={(value) => dispatch(setShowFeed(value))}
           />
           {canExportHealth ? <HealthExportSwitch /> : undefined}
+          {canRecordOnWatch ? <WatchRecordingSwitch /> : undefined}
         </SegmentedGroup>
       </View>
     </View>

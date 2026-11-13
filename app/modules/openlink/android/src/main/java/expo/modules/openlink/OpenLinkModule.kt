@@ -11,8 +11,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import tech.mmarca.openlink.OpenLink
 import tech.mmarca.openlink.OpenLinkDevice
-import tech.mmarca.openlink.OpenLinkLiveBatch
-import tech.mmarca.openlink.OpenLinkLiveSubscription
 import tech.mmarca.openlink.OpenLinkProfile
 import tech.mmarca.openlink.OpenLinkRecordingMode
 import tech.mmarca.openlink.OpenLinkRecordingRequest
@@ -33,7 +31,7 @@ class OpenLinkModule : Module() {
   override fun definition() = ModuleDefinition {
     Name("OpenLink")
 
-    Events(STATUS_EVENT, DEVICES_EVENT, RECORDING_STATE_EVENT, LIVE_SAMPLES_EVENT)
+    Events(STATUS_EVENT, DEVICES_EVENT, RECORDING_STATE_EVENT)
 
     OnCreate {
       if (!isSupported()) return@OnCreate
@@ -42,7 +40,6 @@ class OpenLinkModule : Module() {
         launch { client.status.collect { sendEvent(STATUS_EVENT, it.toMap()) } }
         launch { client.devices.collect { sendEvent(DEVICES_EVENT, mapOf("devices" to it.map(OpenLinkDevice::toMap))) } }
         launch { client.recordingStates.collect { sendEvent(RECORDING_STATE_EVENT, it.toMap()) } }
-        launch { client.liveBatches.collect { sendEvent(LIVE_SAMPLES_EVENT, it.toMap()) } }
       }
     }
 
@@ -92,12 +89,6 @@ class OpenLinkModule : Module() {
 
     Function("stopRecording") { sessionId: String -> withClient { stopRecording(sessionId) } }
 
-    Function("subscribeLive") { sessionId: String, deviceId: String ->
-      withClient { subscribeLive(OpenLinkLiveSubscription(sessionId = sessionId, deviceId = deviceId)) }
-    }
-
-    Function("unsubscribeLive") { sessionId: String -> withClient { unsubscribeLive(sessionId) } }
-
     Function("setBodyWeight") { weightKg: Double, atMillis: Double ->
       withClient { setProfile(OpenLinkProfile(weightKg = weightKg, updatedAtMillis = atMillis.toLong())) }
     }
@@ -111,7 +102,6 @@ class OpenLinkModule : Module() {
     private const val STATUS_EVENT = "onStatus"
     private const val DEVICES_EVENT = "onDevices"
     private const val RECORDING_STATE_EVENT = "onRecordingState"
-    private const val LIVE_SAMPLES_EVENT = "onLiveSamples"
 
     private const val HOST_PACKAGE = "tech.mmarca.openwatch"
 
@@ -158,7 +148,6 @@ private fun OpenLinkDevice.toMap(): Map<String, Any?> = mapOf(
   "supportsRecording" to supportsRecording,
   "recordingFeatures" to recordingFeatures.map { it.name },
   "exerciseTypes" to exerciseTypes.toList(),
-  "liveSampleTypes" to liveSampleTypes.map { it.name },
 )
 
 private fun OpenLinkRecordingState.toMap(): Map<String, Any?> = mapOf(
@@ -176,10 +165,4 @@ private fun OpenLinkRecordingState.toMap(): Map<String, Any?> = mapOf(
       "heartRateRecovery2MinBpm" to it.heartRateRecovery2MinBpm,
     )
   },
-)
-
-private fun OpenLinkLiveBatch.toMap(): Map<String, Any?> = mapOf(
-  "sessionId" to sessionId,
-  "deviceId" to deviceId,
-  "samples" to samples.map { mapOf("type" to it.type.name, "atMillis" to it.atMillis.toDouble(), "value" to it.value) },
 )

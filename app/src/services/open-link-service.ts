@@ -1,16 +1,9 @@
-import {
-  OpenLinkDevice,
-  OpenLinkLiveBatch,
-  OpenLinkModule,
-  OpenLinkRecordingState,
-  OpenLinkStatus,
-} from '~/modules/openlink';
+import { OpenLinkDevice, OpenLinkModule, OpenLinkRecordingState, OpenLinkStatus } from '~/modules/openlink';
 
 export interface OpenLinkListener {
   status(status: OpenLinkStatus): void;
   devices(devices: OpenLinkDevice[]): void;
   recordingState(state: OpenLinkRecordingState): void;
-  liveSamples(batch: OpenLinkLiveBatch): void;
 }
 
 /** LiftLog as an OpenLink client of OpenWatch. Every call is a no-op where OpenLink is missing. */
@@ -33,7 +26,6 @@ export class OpenLinkService {
     module.addListener('onStatus', listener.status);
     module.addListener('onDevices', ({ devices }) => listener.devices(devices));
     module.addListener('onRecordingState', listener.recordingState);
-    module.addListener('onLiveSamples', listener.liveSamples);
     listener.status(module.getStatus());
     listener.devices(module.getDevices());
   }
@@ -64,14 +56,6 @@ export class OpenLinkService {
 
   stopRecording(sessionId: string) {
     this.module?.stopRecording(sessionId);
-  }
-
-  subscribeLive(sessionId: string, deviceId: string) {
-    this.module?.subscribeLive(sessionId, deviceId);
-  }
-
-  unsubscribeLive(sessionId: string) {
-    this.module?.unsubscribeLive(sessionId);
   }
 
   setBodyWeight(weightKg: number, atMillis: number) {

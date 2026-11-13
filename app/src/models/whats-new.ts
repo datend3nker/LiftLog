@@ -1,6 +1,7 @@
 import AssignmentIcon from '@expo/material-symbols/assignment.xml';
 import DnsIcon from '@expo/material-symbols/dns.xml';
 import HeartCheckIcon from '@expo/material-symbols/heart_check.xml';
+import WatchIcon from '@expo/material-symbols/watch.xml';
 import PodcastsIcon from '@expo/material-symbols/podcasts.xml';
 import type { RootState } from '@/store';
 import { TranslationKey } from '@tolgee/react';
@@ -75,6 +76,18 @@ export const whatsNewEntries: WhatsNewEntry[] = [
       state.settings.showFeed &&
       Object.values(state.feed.friends).some((friend) => friend.status === 'friend') &&
       !state.feed.identity.unwrapOr(undefined)?.shareLiveWorkouts,
+  },
+  {
+    id: 5,
+    icon: WatchIcon,
+    systemImage: 'applewatch',
+    titleKey: 'whats_new.watch_recording.title',
+    bodyKey: 'whats_new.watch_recording.body',
+    cta: {
+      labelKey: 'whats_new.watch_recording.cta',
+      route: '/settings/workout-configuration',
+    },
+    condition: (state) => state.openLink.hostInstalled && !state.settings.recordWorkoutsOnWatch,
   },
 ];
 

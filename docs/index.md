@@ -29,6 +29,10 @@ work to find the docs relevant to your area, and update it whenever you add, rem
   numbers carry into today (and why weight carries but reps usually do not), and how the progressive
   overload rules move them. Covers rule order, limits and starting over, rules that can never run, and
   the two ways to set up double progression. Ends with pointers to the code.
+- [WatchRecording.md](./WatchRecording.md) - Android only, opt-in: LiftLog asks OpenWatch (via the
+  OpenLink protocol) to record each workout on a connected watch. Covers the settings and trust flow,
+  the workout lifecycle, why LiftLog skips its own Health Connect exercise session when the watch
+  recorded, the code map, and how the native module builds.
 - [PersonalRecords.md](./PersonalRecords.md) - How personal records for an exercise are calculated
 - [PlanFileFormat.md](./PlanFileFormat.md) - the `.liftlogplan` file format, how plans are imported and
   exported, and the Claude skill that authors plan files against the schema.
